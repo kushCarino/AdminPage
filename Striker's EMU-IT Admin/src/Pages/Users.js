@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getAllUsers } from "../Slice/users/userSlice";
+import { deleteUser, getAllUsers } from "../Slice/users/userSlice";
 import moment from 'moment'
 
 function Users() {
@@ -18,9 +18,13 @@ function Users() {
 
   useEffect(() => {
     dispatch(getAllUsers());
-  }, [dispatch]);
+  }, [dispatch,isSuccess]);
 
   console.log(users)
+
+  function delUser(id){
+    dispatch(deleteUser(id))
+  }
   return (
       <>
         <div className="se-pre-con" />
@@ -225,6 +229,7 @@ function Users() {
                                 type="button"
                                 className="btn btn-primary btn-style"
                                 data-toggle="modal"
+                                onClick={delUser(item._id)}
                               >
                                 Delete
                               </button>

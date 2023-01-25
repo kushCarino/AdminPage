@@ -37,6 +37,30 @@ async function getUsers() {
     }
   );
 
+  async function del(id) {
+    const response = await axios.delete(
+      `${API_URL}/user/deleteUser/${id}`);
+  
+    return response.data;
+  }
+  
+  export const deleteUser = createAsyncThunk(
+    "del/deleteUser",
+    async (id, thunkAPI) => {
+      try {
+        return await del(id);
+      } catch (error) {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        return thunkAPI.rejectWithValue(message);
+      }
+    }
+  );
+
   export const userSlice = createSlice({
     name: 'users',
     initialState,
@@ -67,6 +91,20 @@ async function getUsers() {
         })
     
 
+        .addCase(deleteUser.pending, (state)=>{
+          state.isLoading = true
+      })
+      .addCase(deleteUser.fulfilled,(state,action)=>{
+          state.isLoading = false
+          state.isSuccess =true
+          //state.del = action.payload.message.data
+      })
+      .addCase(deleteUser.rejected,(state,action)=>{
+          state.isLoading = false;
+          state.isError = true;
+          state.message =action.payload;
+          //state.del = null;
+      })
     }
 })
 
